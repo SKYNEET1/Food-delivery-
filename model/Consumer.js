@@ -1,11 +1,5 @@
+const { required } = require('joi');
 const mongoose = require('mongoose');
-
-const useraAddressSchema = new mongoose.Schema({
-    city: { type: String, required: true },
-    state: { type: String, required: true },  
-    pinCode: { type: String, required: true },  
-    landMark: { type: String }
-},{ _id: false })
 
 const consumerSchema = new mongoose.Schema({
     name: {type: String},
@@ -14,10 +8,16 @@ const consumerSchema = new mongoose.Schema({
     category: {type: String},
     gender:{
         type:String,
-        enum:['male','female'],
-        default:'male'
+        enum:['male','female']
     },
-    address: [useraAddressSchema],
+    age:{
+        type:Number,
+        required:true
+    },
+    activeAddress:{type:String},
+    addresses: [{
+        type:mongoose.Schema.Types.ObjectId, ref: 'AddressOfConsumer'
+    }],
     orders:[{
         type:mongoose.Schema.Types.ObjectId, ref: 'Orders'
     }]

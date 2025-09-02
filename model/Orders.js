@@ -8,13 +8,18 @@ const orderSchema = new mongoose.Schema({
         quantity: { type: Number, default: 1 }
     }],
     totalCost: Number,
-    status: { 
-        type: String, 
-        enum: ["Placed", "Preparing", "Out for Delivery", "Delivered"], 
-        default: "Placed" 
+    status: {
+        type: String,
+        enum: ["Placed", "Preparing", "Out for Delivery", "Delivered"],
+        default: "Placed"
+    },
+    deliveryAgent: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Delivery",
+        required: true
     },
     paymentStatus: { type: String, enum: ["Paid", "Unpaid"], default: "Unpaid" }
 });
 
 
-module.exports = mongoose.model('Orders', ordersSchema)
+module.exports = mongoose.model('Order', orderSchema)

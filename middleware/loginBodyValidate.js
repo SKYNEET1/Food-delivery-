@@ -13,10 +13,9 @@ const validateLoginBody = async (req, res, next) => {
                 "string.empty": "password can not be empty",
                 "any.required": "password is mandatory"
             }),
-            phoneNo: joi.number().integer().strict().required().messages({
-                "number.base": "phoneNo must be a number",
-                "number.integer": "phoneNo must be integer, no decimal allowed",
-                "any.required": "phoneNo field is mandatory"
+            phoneNo: joi.string().required().messages({
+            "string.base": "Phone number must be string",
+            "any.required": "Phone number is required"
             })
         })
 

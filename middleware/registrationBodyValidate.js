@@ -8,10 +8,9 @@ const validateRegistration = async (req, res, next) => {
             "string.empty": "User name can not be empty",
             "any.required": "User name is mandatory"
         }),
-        phoneNo: joi.number().integer().strict().required().messages({
-            "number.base": "phoneNo must be a number",
-            "number.integer": "phoneNo must be integer, no decimal allowed",
-            "any.required": "phoneNo field is mandatory"
+        phoneNo: joi.string().required().messages({
+            "string.base": "Phone number must be a 10-digit number",
+            "any.required": "Phone number is required"
         }),
         email: joi.string().trim().email().required().messages({
             "string.empty": "email can not be empty",
@@ -48,11 +47,11 @@ const validateRegistration = async (req, res, next) => {
 
     try {
 
-        const existingUser = await User.findOne({ phoneNo: value.phoneNo });
+        const existingUser = await User.findOne({ phoneNo: value.phoneNo, email: value.email });
         if (existingUser) {
             return res.status(400).json({
                 success: false,
-                message: "User already registered"
+                message: `User already registered with phoneNo: ${value.phoneNo}`
             });
         }
         const { confirmPassword, ...sanitizeValue } = value;

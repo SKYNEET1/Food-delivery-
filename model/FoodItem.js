@@ -7,4 +7,4 @@ const foodItemSchema = new mongoose.Schema({
     restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" }
 });
 
-model.exports = foodItemSchema
+model.exports = mongoose.model('Food',foodItemSchema)

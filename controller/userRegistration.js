@@ -7,7 +7,7 @@ exports.userRegistration = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
     if (!hashedPassword) {
-        res.status(400).json({
+        return res.status(400).json({
             status: false,
             message: 'Something went wrong in fetching hashPassword'
         })
@@ -20,7 +20,7 @@ exports.userRegistration = async (req, res) => {
                 status: false,
                 message: "Failed to create user after hashing"
             });
-        }
+        }   
 
         return res.status(201).json({
             status: true,
@@ -30,7 +30,7 @@ exports.userRegistration = async (req, res) => {
         
     } catch (error) {
 
-        res.status(500).json({
+        return res.status(500).json({
             message: "Error signing up",
             error: error.message
         })
