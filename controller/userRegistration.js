@@ -3,7 +3,7 @@ const { hashPassword } = require('../utils/hash');
 
 exports.userRegistration = async (req, res) => {
 
-    const { userName, id, password, email, category } = req.body;
+    const { userName, phoneNo, password, email, category } = req.body;
 
     const hashedPassword = await hashPassword(password);
     if (!hashedPassword) {
@@ -14,7 +14,7 @@ exports.userRegistration = async (req, res) => {
     }
 
     try {
-        const response = await User.create({ userName, id, password:hashedPassword, email, category })
+        const response = await User.create({ userName, phoneNo, password:hashedPassword, email, category })
         if (!response) {
             return res.status(400).json({
                 status: false,

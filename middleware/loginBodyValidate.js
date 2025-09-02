@@ -1,26 +1,39 @@
 const User = require("../model/User");
-const { validateLogin } = require("../validator/SchemaValidateion");
+const joi = require('joi');
 
 const validateLoginBody = async (req, res, next) => {
     try {
-    const { id, email, password } = req.body;
-        if (!id || !email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Please give all field'
+        const validateLoginData = joi.object({
+            email: joi.string().email().required().messages({
+                "string.empty": "email can not be empty",
+                "string.email": "email should be valid",
+                "any.required": "email is mandatory"
+            }),
+            password: joi.string().required().messages({
+                "string.empty": "password can not be empty",
+                "any.required": "password is mandatory"
+            }),
+            phoneNo: joi.number().integer().strict().required().messages({
+                "number.base": "phoneNo must be a number",
+                "number.integer": "phoneNo must be integer, no decimal allowed",
+                "any.required": "phoneNo field is mandatory"
             })
+        })
+
+        const validateLogin = (bodyData) => {
+            return validateLoginData.validate(bodyData, { abortEarly: false, allowUnknown: false })
         }
 
         const { error, value } = validateLogin(req.body);
         if (error) {
             return res.status(400).json({
                 success: false,
-                message: error.details.map(d => d.message).join(',')
+                message: error.details.map((d, index) =>  `${index} --> ${d.message}` ).join(', ')
             })
         }
 
         try {
-            const isUserSignedUp = await User.findOne({ id: value.id, email:value.email })
+            const isUserSignedUp = await User.findOne({ phoneNo: value.phoneNo, email: value.email })
             if (!isUserSignedUp) {
                 return res.status(400).json({
                     status: false,
@@ -28,7 +41,7 @@ const validateLoginBody = async (req, res, next) => {
                 });
             }
 
-            req.body = {value,isUserSignedUp};
+            req.body = { value, isUserSignedUp };
             next();
         } catch (error) {
             console.log(error)
