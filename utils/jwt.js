@@ -1,11 +1,19 @@
 const jwt = require('jsonwebtoken');
 
-const generateToken = (phoneNo,category) => {
+const generateAccessToken = (phoneNo, category) => {
     return jwt.sign(
-        {phoneNo,category},
+        { phoneNo, category },
         process.env.JWT_KEY,
-        {expiresIn:'2h'}
+        { expiresIn: '2h' }
     )
 }
 
-module.exports = generateToken
+const generateRefreshToken = (phoneNo, category) => {
+    return jwt.sign(
+        { phoneNo, category },
+        process.env.JWT_REFRESH_KEY,
+        { expiresIn: '7d' }
+    )
+}
+
+module.exports = { generateAccessToken, generateRefreshToken }
