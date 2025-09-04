@@ -17,7 +17,7 @@ const validateLoginBody = async (req, res, next) => {
             "string.base": "Phone number must be string",
             "any.required": "Phone number is required"
             })
-        })
+        });
 
         const validateLogin = (bodyData) => {
             return validateLoginData.validate(bodyData, { abortEarly: false, allowUnknown: false })
@@ -31,25 +31,9 @@ const validateLoginBody = async (req, res, next) => {
             })
         }
 
-        try {
-            const isUserSignedUp = await User.findOne({ phoneNo: value.phoneNo, email: value.email })
-            if (!isUserSignedUp) {
-                return res.status(400).json({
-                    status: false,
-                    message: 'User is not registered'
-                });
-            }
-
-            req.body = { value, isUserSignedUp };
+            req.body =  value ;
             next();
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json({
-                success: false,
-                message: "Error in accessing Database ",
-                error: error.message
-            })
-        }
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({

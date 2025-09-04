@@ -1,6 +1,6 @@
-const DeliveryProfile = require("../model/DeliveryProfile")
-const Order = require("../model/Orders")
-const User = require("../model/User")
+const DeliveryProfile = require("../../model/DeliveryProfile")
+const Order = require("../../model/Orders")
+const User = require("../../model/User")
 
 exports.deliveryAgentProfile = async (req, res) => {
     try {

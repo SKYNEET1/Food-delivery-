@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const consumerProfileValidator = async (req, res, next) => {
+const adminProfileValidator = async (req, res, next) => {
 
     const { phoneNo } = req.user;
 
@@ -13,11 +13,10 @@ const consumerProfileValidator = async (req, res, next) => {
             "any.only": "Gender must be either male or female",
             "string.empty": "Gender cannot be empty"
         }),
-        foodType: Joi.string().trim().valid('Veg','Non Veg').messages({
-            "any.only": "Food item must be either Veg or Non Veg",
-            "string.empty": "Food Type can not be empty"
+        empId: Joi.string().trim().messages({
+            "string.empty": "empId can not be empty"
         })
-    })
+    })                      
 
     const validateProfile = (bodyData) => {
         return consumerProfileValidating.validate(bodyData, { abortEarly: false, allowUnknown: true })
@@ -35,4 +34,4 @@ const consumerProfileValidator = async (req, res, next) => {
 
 }
 
-module.exports = consumerProfileValidator
+module.exports = adminProfileValidator

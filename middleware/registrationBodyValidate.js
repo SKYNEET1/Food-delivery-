@@ -26,15 +26,15 @@ const validateRegistration = async (req, res, next) => {
             "any.required": "Confirm password is mandatory",
             "string.empty": "Confirm password cannot be empty"
         }),
-        category: joi.string().trim().lowercase().valid("restaurant", "consumer", "delivery agent").required().messages({
-            'any.only': 'category must be either restaurant, consumer or delivery agent',
+        category: joi.string().trim().lowercase().valid("restaurant", "consumer", "delivery agent","admin").required().messages({
+            'any.only': 'category must be either restaurant, consumer, delivery agent or admin',
             'any.required': 'category is mandatory',
             'string.empty': 'category can not be empty'
         }),
     })
 
     const validateUser = (bodyData) => {
-        return validateUserSchema.validate(bodyData, { abortEarly: false, allowUnknown: false })
+        return validateUserSchema.validate(bodyData, { abortEarly: false, allowUnknown: true })
     }
 
     const { error, value } = validateUser(req.body);
@@ -45,27 +45,9 @@ const validateRegistration = async (req, res, next) => {
         })
     }
 
-    try {
-
-        const existingUser = await User.findOne({ phoneNo: value.phoneNo, email: value.email });
-        if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                message: `User already registered with phoneNo: ${value.phoneNo}`
-            });
-        }
         const { confirmPassword, ...sanitizeValue } = value;
         req.body = sanitizeValue;
         next();
-
-    } catch (error) {
-
-        return res.status(500).json({
-            success: false,
-            message: "Error in accessing Database ",
-            error: error.message
-        });
-    }
 
 }
 

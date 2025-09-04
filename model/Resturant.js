@@ -13,6 +13,6 @@ const restaurantSchema = new mongoose.Schema({
     phoneNo: { type: String },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
     menu: [{ type: mongoose.Schema.Types.ObjectId, ref: "FoodItem" }]
-});
+},{ timestamps: true });
 
 model.exports = mongoose.model('Resturant',restaurantSchema);

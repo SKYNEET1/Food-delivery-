@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     paymentStatus: { type: String, enum: ["Paid", "Unpaid"], default: "Unpaid" }
-});
+},{ timestamps: true });
 
 
 module.exports = mongoose.model('Order', orderSchema)

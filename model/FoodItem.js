@@ -5,6 +5,6 @@ const foodItemSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     available: { type: Boolean, default: true },
     restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" }
-});
+},{ timestamps: true });
 
 model.exports = mongoose.model('Food',foodItemSchema)

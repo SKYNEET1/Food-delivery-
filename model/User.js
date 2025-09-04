@@ -21,13 +21,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    refreshToken:{
+        type:String
+    },
     category: {
         type: String,
-        enum: ['restaurant', 'consumer','delivery agent'],
+        enum: ['restaurant', 'consumer','delivery agent','admin'],
         lowercase: true,
         trim: true,
         required: true
     }
-})
+},{ timestamps: true })
 
 module.exports = mongoose.model('User', userSchema)

@@ -1,4 +1,4 @@
-const consumerTokenValidate = async(req ,res, next) => {
+const adminTokenValidate = async(req ,res, next) => {
         
     if (!req.user || !req.user.phoneNo || !req.user.category) {
         return res.status(400).json({
@@ -7,14 +7,14 @@ const consumerTokenValidate = async(req ,res, next) => {
         });
     }
     const { phoneNo, category } = req.user;
-    if (category !== 'consumer') {
+    if (category !== 'admin') {
         return res.status(403).json({
             success: false,
-            message: `This ${phoneNo} is not autherised to access User profile`
+            message: `This ${phoneNo} is not autherised to create User profile`
         })
     }
 
     next();
 }
 
-module.exports = consumerTokenValidate
+module.exports = adminTokenValidate

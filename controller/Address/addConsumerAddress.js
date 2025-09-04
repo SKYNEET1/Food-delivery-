@@ -1,5 +1,5 @@
+const Consumer = require("../../model/Consumer")
 const ConsumerAddress = require("../../model/ConsumerAddress")
-const User = require("../../model/User")
 
 exports.addConsumerAddress = async (req, res) => {
     try {
@@ -10,16 +10,17 @@ exports.addConsumerAddress = async (req, res) => {
                 message: 'value and phoneNo could not found in req.body'
             })
         }
-        const isUser = await User.findOne({ phoneNo })
-        if (!isUser) {
+        const isConsumer = await Consumer.findOne({ phoneNo })
+        if (!isConsumer) {
             return res.status(400).json({
                 success: false,
-                message: `This ${phoneNo} is not yet registered or not yet logged in`
+                message: `This ${phoneNo} is not yet `
             })
         }
+        // const consumer = await
         const { addressLine1, addressLine2, city, state, pinCode, landMark, type } = value
         const normalized = {
-            user: isUser._id,
+            consumer: isConsumer._id,
             addressLine1: addressLine1.trim().toLowerCase(),
             addressLine2: addressLine2 ? addressLine2.trim().toLowerCase() : '',
             city: city.trim().toLowerCase(),
@@ -48,6 +49,14 @@ exports.addConsumerAddress = async (req, res) => {
             });
         }
 
+        const count = await ConsumerAddress.countDocuments({ phoneNo });
+        if (count >= 3) {
+            return res.status(400).json({
+                success: false,
+                message: "Consumer can not give more than 3 address",
+            });
+        }
+
         const newAddress = await ConsumerAddress.create(normalized)
         if (!newAddress) {
             return res.status(400).json({
@@ -64,7 +73,7 @@ exports.addConsumerAddress = async (req, res) => {
         console.error("Error creating address of consumer:", error);
         return res.status(500).json({
             success: false,
-            message: "Server error",
+            message: "Server error in fetching address",
             error: error.message
         });
     }

@@ -1,14 +1,19 @@
 const express = require('express');
 const dbConnect = require('./config/database');
-const router = require('./route/routes');
+const userRouter = require('./route/userRouter');
 const app = express();
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
+const consumerRouter = require('./route/consumerRouter');
+const adminRouter = require('./route/adminRouter');
 
 // middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use('/api',router);
+
+app.use('/api',userRouter);
+app.use('/api',consumerRouter);
+app.use('/api',adminRouter);
 
 PORT = process.env.PORT || 4000;
 app.listen(PORT,()=>{

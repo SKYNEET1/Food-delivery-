@@ -1,9 +1,10 @@
+const Consumer = require("../../model/Consumer")
 const ConsumerAddress = require("../../model/ConsumerAddress")
 
 exports.activateConsumerAddress = async (req, res) => {
     try {
         const { phoneNo } = req.user
-        const { _id } = req.body
+        const { _id } = req.params
         if (!_id) {
             return res.status(400).json({
                 success: false,
@@ -34,15 +35,32 @@ exports.activateConsumerAddress = async (req, res) => {
         targetAddress.active = true;
         await targetAddress.save();
 
+        const userUpdate = await Consumer.findOne({ phoneNo });
+        if (!userUpdate) {
+            return res.status(400).json({
+                success: false,
+                message: "Consumer with this phoneNo is not found"
+            });
+        }
+
+        await Consumer.updateOne(
+            {phoneNo},
+            [{
+                $set:{
+                    activeAddress:[targetAddress.toObject()]
+                }
+            }]
+        )
+
         return res.status(200).json({
             success: true,
             message: `Address ${_id} has been set as active`,
-            data: targetAddress
+            data: targetAddress,
         })
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: "Server error while activating address",
+            message: "Server error while fetching address",
             error: error.message
         });
     }
