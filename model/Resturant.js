@@ -1,18 +1,34 @@
 const mongoose = require('mongoose');
 
-const resturantAddressSchema = new mongoose.Schema({
-    city: { type: String, required: true },
-    state: { type: String, required: true },  
-    pinCode: { type: String, required: true },  
-    landMark: { type: String }
-},{ _id: false })
-
 const restaurantSchema = new mongoose.Schema({
-    nameOfResturant: { type: String },
-    address: [resturantAddressSchema],
-    phoneNo: { type: String },
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
-    menu: [{ type: mongoose.Schema.Types.ObjectId, ref: "FoodItem" }]
-},{ timestamps: true });
+    nameOfResturant: {
+        type: String,
+        required: true
+    },
+    phoneNo: {
+        type: Number
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    owner: {
+        type: String
+    },
+    rating: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5
+    }, // will show the average rating in its profile...
+    menu: [{
+        item: {
+            type: mongoose.Schema.Types.ObjectId, ref: "Menu"
+        },
+        foodName: {
+            type: String
+        }
+    }]
+}, { timestamps: true });
 
-model.exports = mongoose.model('Resturant',restaurantSchema);
+module.exports = mongoose.model('Resturant', restaurantSchema);

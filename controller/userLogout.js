@@ -24,12 +24,12 @@ exports.userLogout = async (req, res) => {
         }
 
         return res.status(200)
-            .clearCookie('token', { httpOnly: true, secure: true, sameSite: "Strict", })
-            .clearCookie('refresh', { httpOnly: true, secure: true, sameSite: "Strict", })
+            .clearCookie('token', { httpOnly: true, secure: true, sameSite: "Strict" })
+            .clearCookie('refresh', { httpOnly: true, secure: true, sameSite: "Strict" })
             .json({
                 message: `User ${user.userName} with ${user.phoneNo} is logged out successfully`,
                 data: user
-            })
+            })       
     } catch (error) {
         console.log(error)
         return res.status(500).json({

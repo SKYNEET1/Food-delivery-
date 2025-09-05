@@ -10,22 +10,29 @@ exports.authenticateUser = async (req, res, next) => {
         token = req.cookies.token;
     }
 
-
+    console.log("token from cookies autheriseduser",token)
     if (!token) {
         return res.status(401).json({ message: 'Access Denied. No token provided.' });
     }
+    
     try {
         const decode = jwt.verify(token, process.env.JWT_KEY)
+        console.log(decode)
         req.user = decode
         next();
     } catch (error) {
-        if (error.message === 'jwt expired') {
-            next()
-        } else {
-            return res.status(400).json({
-                message: error.message === 'jwt expired' ? 'Access token expired' : 'Invalid Token',
-                error: error.message
+        console.log(error)
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                success: false,
+                message: 'Access token expired. Please refresh your token.',
+                expiredAt: error.expiredAt
             });
         }
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid token',
+            error: error.message
+        });
     }
 }
