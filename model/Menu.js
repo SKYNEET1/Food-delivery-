@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const foodSchema = new mongoose.Schema({
@@ -25,6 +26,10 @@ const foodSchema = new mongoose.Schema({
     isAvailable: {
         type: Boolean,
         default: true
+    },
+    quantity:{
+        type: Number,
+        required:true
     },
     rating: {
         type: Number,

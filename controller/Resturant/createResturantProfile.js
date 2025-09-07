@@ -27,7 +27,7 @@ exports.createRestaurantProfile = async (req, res) => {
             owner: user.userName,
             phoneNo: user.phoneNo,
             rating: 0,
-            menu: []
+            menu: null
         })
 
         return res.status(201).json({

@@ -82,6 +82,15 @@ exports.createMenuForRestaurant = async (req, res) => {
                     message: 'Error in adding a new food list to esisting menu'
                 })
             }
+            if (isRestaurant.menu !== menu._id) {
+
+                isRestaurant.menu = menu._id;
+                await isRestaurant.save();
+
+            }else{
+                console.log('menu id there')
+            }
+
 
             return res.status(201).json({
                 success: true,

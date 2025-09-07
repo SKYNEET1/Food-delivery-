@@ -17,6 +17,11 @@ const restaurantMenuValidation = async (req, res, next) => {
             "any.only": "Food type must be either Veg or Non Veg",
         }),
         isAvailable: Joi.boolean().default(true),
+        quantity: Joi.number().strict().min(1).required().messages({
+            "number.base": "quantity must be a number",
+            "number.min": "quantity cannot be less than 1",
+            "any.required": "quantity is required"
+        })
     })
 
     const bodySchemaValidate = (bodyData) => {

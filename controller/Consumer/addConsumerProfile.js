@@ -1,9 +1,24 @@
-const Consumer = require('../../model/Consumer')
+const Consumer = require('../../model/Consumer');
+const User = require('../../model/User');
 
 exports.addConsumerProfile = async (req, res) => {
 
     try {
         const { value, phoneNo } = req.body;
+        if (!phoneNo || !value) {
+            return res.status(400).json({
+                success: false,
+                message: 'no phoneNO and value is present in req.body after validation'
+            })
+        }
+
+        const isUser = await User.findOne({phoneNo});
+        if(!isUser){
+            return res.status(400).json({
+                success: false,
+                message: 'isUser could not be fetched from this phoneNo'
+            })
+        }
 
         const isProfile = await Consumer.findOne({ phoneNo })
         if (isProfile) {

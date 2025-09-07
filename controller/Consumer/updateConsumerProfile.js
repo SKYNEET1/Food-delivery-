@@ -5,6 +5,13 @@ exports.updateConsumerProfile = async (req, res) => {
 
     try {
         const { phoneNo } = req.user;
+        if (!phoneNo) {
+            return res.status(400).json({
+                success: false,
+                message: 'no phoneNO is present in token after validation'
+            })
+        }
+
 
         const isProfile = await Consumer.findOne({ phoneNo })
         if (!isProfile) {
@@ -16,8 +23,8 @@ exports.updateConsumerProfile = async (req, res) => {
 
         const changesAllowed = ['name', 'gender', 'age', 'foodType'];
         const update = {};
-        Object.keys(req.body).every((key) =>{
-            if(changesAllowed.includes(key)){
+        Object.keys(req.body).every((key) => {
+            if (changesAllowed.includes(key)) {
                 update[key] = req.body[key];
             }
         })

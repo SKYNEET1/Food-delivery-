@@ -19,6 +19,7 @@ exports.getConsumerProfile = async (req, res) => {
             data: isProfile
         })
     } catch (error) {
+        console.log(error.message)
         return res.status(500).json({
             success: false,
             message: "Server error while fetching consumer profile",

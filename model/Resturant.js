@@ -21,14 +21,7 @@ const restaurantSchema = new mongoose.Schema({
         min: 0,
         max: 5
     }, // will show the average rating in its profile...
-    menu: [{
-        item: {
-            type: mongoose.Schema.Types.ObjectId, ref: "Menu"
-        },
-        foodName: {
-            type: String
-        }
-    }]
+    menu: { type: mongoose.Schema.Types.ObjectId, ref: "Menu" }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Resturant', restaurantSchema);
