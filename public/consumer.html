@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Consumer Page</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+  <h2>Consumer</h2>
+  <div id="messages"></div>
+
+  <script>
+
+    const socket = io("http://localhost:3000");
+
+    // socket.on("connect", () => {
+    //   appendMsg(`Connected as Consumer with ID: ${socket.id}`);
+    //   // Join the consumer room
+    //   socket.emit("consumerJoined", { phoneNo });
+    // });
+
+    // Listen for orderPlaced events
+    socket.on("orderPlaced", (data) => {
+        console.log(data)
+      appendMsg(` Order Update: ${JSON.stringify(data)}`);
+    });
+
+    function appendMsg(text) {
+      const p = document.createElement("p");
+      p.textContent = text;
+      document.getElementById("messages").appendChild(p);
+    }
+  </script>
+</body>
+</html>

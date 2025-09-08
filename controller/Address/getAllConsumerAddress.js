@@ -1,3 +1,4 @@
+const Consumer = require("../../model/Consumer");
 const ConsumerAddress = require("../../model/ConsumerAddress")
 
 exports.getAllConsumerAddress = async (req, res) => {
@@ -9,9 +10,18 @@ exports.getAllConsumerAddress = async (req, res) => {
                 message: "PhoneNo is required"
             });
         }
-        const targetAddress = await ConsumerAddress.find({phoneNo});
+
+        const user = await Consumer.findOne({ phoneNo,isDeleted:false });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: `This ${phoneNo} Profile not found or deleted`
+            })
+        }
+    
+        const targetAddress = await ConsumerAddress.find({ phoneNo });
         if (targetAddress.length === 0) {
-            return res.status(400).json({
+            return res.status(404).json({
                 success: false,
                 message: "No addresses found for this user"
             });
@@ -20,7 +30,7 @@ exports.getAllConsumerAddress = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: `Found ${targetAddress.length} addresses for this user`,
-            data: targetAddress, 
+            data: targetAddress,
         })
 
     } catch (error) {

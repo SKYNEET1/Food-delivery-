@@ -14,7 +14,13 @@ exports.addConsumerAddress = async (req, res) => {
         if (!isConsumer) {
             return res.status(400).json({
                 success: false,
-                message: `This ${phoneNo} is not yet `
+                message: `This ${phoneNo} did not have created consumer Profile`
+            })
+        }
+        if (isConsumer.isDeleted === true) {
+            return res.status(400).json({
+                success: false,
+                message: 'This User profile has deleted'
             })
         }
         // const consumer = await

@@ -1,4 +1,0 @@
-admin can block the user
-admin can convert one user to rest or delei
-admin can fetch all consumer or rest or deliver agent etc ..
-

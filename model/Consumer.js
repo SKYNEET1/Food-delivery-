@@ -22,6 +22,10 @@ const consumerSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
+    isDeleted:{
+        type: Boolean,
+        default: false
+    },
     orders: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'Orders'
     }]

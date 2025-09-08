@@ -13,14 +13,6 @@ const deliveryAgentProfileSchema = new mongoose.Schema({
     phoneNo: {
         type: String,
     },
-    vehicleDetails: {
-        type: String,
-        required: true
-    },
-    licenseNo: {
-        type: String,
-        required: true
-    },
     address: {
         type: String,
         required: true

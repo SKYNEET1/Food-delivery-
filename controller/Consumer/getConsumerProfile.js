@@ -13,6 +13,13 @@ exports.getConsumerProfile = async (req, res) => {
             })
         }
 
+        if(isProfile.isDeleted === true){
+            return res.status(400).json({
+                success: false,
+                message: 'This User profile has deleted'
+            })
+        }
+
         return res.status(200).json({
             success: true,
             message: 'Profile fetched successfully',

@@ -2,22 +2,24 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
         customer: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
-        restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
+        restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Resturant" },
         items: [{
-            foodItem: { type: mongoose.Schema.Types.ObjectId, ref: "FoodItem" },
+            foodItem: { type: mongoose.Schema.Types.ObjectId, ref: "Menu" },
             quantity: { type: Number, default: 1 }
         }],
     totalCost: Number,
     foodStatus: {
         type: String,
-        enum: ["Placed", "Preparing", "Out for Delivery", "Delivered"],
+        enum: ["Placed", "Delivered"],
         default: "Placed"
     },
     deliveryAgent: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Delivery",
+        ref: "DeliveryProfile",
+        default: null
     },
-    paymentStatus: { type: String, enum: ["Paid", "Unpaid"], default: "Unpaid" }
+    paymentStatus: { type: String, enum: ["Paid", "Unpaid"], default: "Unpaid" },
+    otp: {type:String}
 },{ timestamps: true });
 
 

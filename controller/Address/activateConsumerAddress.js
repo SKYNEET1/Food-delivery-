@@ -11,6 +11,21 @@ exports.activateConsumerAddress = async (req, res) => {
                 message: "Address _id is required"
             });
         }
+
+        const user = await Consumer.findOne({ phoneNo });
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Consumer with this phoneNo is not found"
+            });
+        }
+        if (user.isDeleted === true) {
+            return res.status(400).json({
+                success: false,
+                message: 'This User profile has deleted'
+            })
+        }
+
         const targetAddress = await ConsumerAddress.findOne({ _id, phoneNo });
         if (!targetAddress) {
             return res.status(404).json({
@@ -35,21 +50,13 @@ exports.activateConsumerAddress = async (req, res) => {
         targetAddress.active = true;
         await targetAddress.save();
 
-        const userUpdate = await Consumer.findOne({ phoneNo });
-        if (!userUpdate) {
-            return res.status(400).json({
-                success: false,
-                message: "Consumer with this phoneNo is not found"
-            });
-        }
-
         await Consumer.updateOne(
-            {phoneNo},
-            [{
-                $set:{
-                    activeAddress:[targetAddress.toObject()]
+            { phoneNo },
+            {
+                $set: {
+                    activeAddress: targetAddress._id
                 }
-            }]
+            }
         )
 
         return res.status(200).json({

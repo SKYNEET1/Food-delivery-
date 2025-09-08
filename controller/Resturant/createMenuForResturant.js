@@ -19,7 +19,14 @@ exports.createMenuForRestaurant = async (req, res) => {
         if (!isRestaurant) {
             return res.status(400).json({
                 success: false,
-                message: `The user: ${phoneNo} is not registered in Restaurant`
+                message: `The user ID: ${phoneNo} is not registered in Restaurant`
+            })
+        }
+
+        if (isRestaurant.isDeleted === true) {
+            return res.status(400).json({
+                success: false,
+                message: `The user ID: ${phoneNo} has been deleted`
             })
         }
 
@@ -87,7 +94,7 @@ exports.createMenuForRestaurant = async (req, res) => {
                 isRestaurant.menu = menu._id;
                 await isRestaurant.save();
 
-            }else{
+            } else {
                 console.log('menu id there')
             }
 

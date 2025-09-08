@@ -1,6 +1,6 @@
 const Joi = require("joi");
-const DeliveryProfile = require("../model/DeliveryProfile");
-const validateDeliveryAgent = async (req, res, next) => {
+const DeliveryProfile = require("../../model/DeliveryProfile");
+const deliveryAgentProfileValidation = async (req, res, next) => {
     if (!req.user || !req.user.phoneNo || !req.user.category) {
         return res.status(400).json({
             success: false,
@@ -17,20 +17,6 @@ const validateDeliveryAgent = async (req, res, next) => {
 
     const deliveryAgentProfileValidation = Joi.object({
 
-        vehicleDetails: Joi.string().trim().min(2).max(100).required().messages({
-            "string.base": "Vehicle details must be a text value",
-            "string.empty": "Vehicle details are required",
-            "string.min": "Vehicle details must be at least 2 characters",
-            "string.max": "Vehicle details cannot be longer than 100 characters",
-            "any.required": "Vehicle details are required"
-        }),
-        licenseNo: Joi.string().trim().min(5).max(20).required().messages({
-            "string.base": "License number must be a text value",
-            "string.empty": "License number is required",
-            "string.min": "License number must be at least 5 characters",
-            "string.max": "License number cannot be longer than 20 characters",
-            "any.required": "License number is required"
-        }),
         address: Joi.string().required().messages({
             "string.base": "address number must be a text value",
             "string.empty": "address can not be empty",
@@ -76,4 +62,4 @@ const validateDeliveryAgent = async (req, res, next) => {
 
 }
 
-module.exports = validateDeliveryAgent
+module.exports = deliveryAgentProfileValidation

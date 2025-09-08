@@ -27,6 +27,7 @@ exports.createRestaurantProfile = async (req, res) => {
             owner: user.userName,
             phoneNo: user.phoneNo,
             rating: 0,
+            isDeleted: false,
             menu: null
         })
 
@@ -40,7 +41,7 @@ exports.createRestaurantProfile = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Server error",
-            error:error.message
+            error: error.message
         });
     }
 }

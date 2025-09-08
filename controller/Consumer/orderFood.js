@@ -1,14 +1,17 @@
 const Menu = require('../../model/Menu');
-const Orders = require('../../model/Orders');
 const Resturant = require('../../model/Resturant');
+const Consumer = require('../../model/Consumer');
+const DeliveryProfile = require('../../model/DeliveryProfile');
+const otpCreation = require('../../helper/otpCreation');
+const Orders = require('../../model/Orders');
+// const { getIO } = require('../../utils/socket.io');
 
 exports.orderFood = async (req, res) => {
 
     try {
-        const { params, body, _id } = req.validateData
+        const { params, body, _id, phoneNo } = req.validateData
         const { restaurant_id, menu_id } = params
-        const { foodStatus, paymentStatus, items } = body
-
+        const { paymentStatus, items } = body
         if (!restaurant_id || !menu_id) {
             return res.status(400).json({
                 success: false,
@@ -20,6 +23,14 @@ exports.orderFood = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "Items are required",
+            });
+        }
+
+        const consumer = await Consumer.findOne({ phoneNo, isDeleted: false });
+        if (!consumer) {
+            return res.status(404).json({
+                success: false,
+                message: `Consumer profile not found for ${phoneNo} or deleted`,
             });
         }
 
@@ -37,6 +48,13 @@ exports.orderFood = async (req, res) => {
                 success: false,
                 message: 'Please give a valid menu'
             })
+        }
+
+        if (!isMenu.restaurant) {
+            return res.status(400).json({
+                success: false,
+                message: "This menu is not linked to any restaurant"
+            });
         }
 
         if (isMenu.restaurant.toString() !== restaurant_id.toString()) {
@@ -85,6 +103,19 @@ exports.orderFood = async (req, res) => {
             // and - the quantity
             found.quantity -= item.quantity;
         }
+
+        const deliveryAgent = await DeliveryProfile.findOne({ availability: true })
+        if (!deliveryAgent) {
+            return res.status(400).json({
+                success: false,
+                message: "No delivery agents available right now, please order food after some time"
+            });
+        }
+        deliveryAgent.availability = false;
+
+        const { hashOtp } = await otpCreation();
+
+        await deliveryAgent.save();
         await isMenu.save();
 
         const order = await Orders.create({
@@ -92,8 +123,9 @@ exports.orderFood = async (req, res) => {
             restaurant: isRestaurant._id,
             items,
             totalCost: total,
-            foodStatus: foodStatus || "Placed",
-            deliveryAgent: null,
+            foodStatus: "Placed",
+            deliveryAgent: deliveryAgent._id,
+            otp:hashOtp,
             paymentStatus: paymentStatus || "Unpaid"
         })
 
@@ -104,6 +136,16 @@ exports.orderFood = async (req, res) => {
             });
 
         }
+
+        // const io = getIO()
+        // io.emit("orderPlaced", {
+        //     orderId: order._id,
+        //     restaurantId: restaurant_id,
+        //     consumerPhone: phoneNo,
+        //     message: "New order placed!",
+        //     foodStatus: order.foodStatus,
+        //     paymentStatus: order.paymentStatus
+        // });
 
         return res.status(201).json({
             success: true,

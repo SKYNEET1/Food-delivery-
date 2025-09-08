@@ -21,6 +21,13 @@ exports.updateConsumerProfile = async (req, res) => {
             })
         }
 
+        if (isProfile.isDeleted === true) {
+            return res.status(400).json({
+                success: false,
+                message: 'This User profile has deleted U can not update it any more'
+            })
+        }
+
         const changesAllowed = ['name', 'gender', 'age', 'foodType'];
         const update = {};
         Object.keys(req.body).every((key) => {
@@ -31,21 +38,21 @@ exports.updateConsumerProfile = async (req, res) => {
         if (Object.keys(update).length === 0) {
             return res.status(400).json({
                 success: false,
-                message: `No valid fields provided. Allowed fields: ${allowedFields.join(", ")}`
+                message: `No valid fields provided. Allowed fields: ${changesAllowed.join(", ")}`
             });
         }
 
         if (update.name) {
             const user = await User.findOne({ phoneNo });
             if (user) {
-                user.userName = name;
+                user.userName = update.name;
                 await user.save()
             }
         }
 
         const updatedConsumer = await Consumer.findOneAndUpdate(
             { phoneNo },
-            { ...update },
+            { $set:update },
             { new: true }
         )
 

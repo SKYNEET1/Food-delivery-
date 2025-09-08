@@ -18,8 +18,6 @@ exports.deliveryAgentProfile = async (req, res) => {
         }
 
         const response = await DeliveryProfile.create({
-            vehicleDetails,
-            licenseNo,
             address,
             availability,
             agentName: user.userName,

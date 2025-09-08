@@ -34,6 +34,7 @@ exports.addConsumerProfile = async (req, res) => {
             phoneNo,
             email: isUser.email,
             activeAddress: [],
+            isDeleted:false,
             orders: []
         })
 

@@ -11,8 +11,16 @@ exports.updateConsumerAddress = async (req, res) => {
                 message: "Address _id is required"
             });
         }
-        const targetAddress = await ConsumerAddress.findOne({ _id,phoneNo });
 
+        const user = await Consumer.findOne({ phoneNo, isDeleted: false });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: `This ${phoneNo} Profile not found or deleted`
+            })
+        }
+
+        const targetAddress = await ConsumerAddress.findOne({ _id, phoneNo });
         if (!targetAddress) {
             return res.status(400).json({
                 success: false,
@@ -31,7 +39,7 @@ exports.updateConsumerAddress = async (req, res) => {
         const isValidField = Object.keys(updatedData).every(field => allowedField.includes(field))
         if (!isValidField) {
             return res.status(400).json({
-                status: false,
+                success: false,
                 message: "Invalid fields to update"
             });
         }
@@ -39,16 +47,14 @@ exports.updateConsumerAddress = async (req, res) => {
         const updateConsumerAdd = await ConsumerAddress.updateOne(
             { _id, phoneNo },
             {
-                $set: {
-                    updatedData
-                }
+                $set: updatedData
             },
             { new: true }
         )
 
         return res.status(200).json({
             success: true,
-            message: `Address ${_id} is deleted`,
+            message: `Address ${_id} is updated`,
             data: updateConsumerAdd,
         })
     } catch (error) {

@@ -2,7 +2,7 @@ const Joi = require('joi')
 
 const orderValidation = async (req, res, next) => {
 
-    const { _id } = req.user;
+    const { _id,phoneNo } = req.user;
 
     const orderParamsValidateObj = Joi.object({
         restaurant_id: Joi.string().length(24).hex().required().messages({
@@ -31,11 +31,8 @@ const orderValidation = async (req, res, next) => {
     }
 
     const orderBodyValidateObj = Joi.object({
-        foodStatus: Joi.string().trim().messages({
-            "string.base": "foodStatus must be a string",
-            "string.empty": "foodStatus cannot be empty",
-        }),
-        paymentStatus: Joi.string().trim().messages({
+        paymentStatus: Joi.string().valid('Paid','Unpaid').trim().messages({
+            "string.any": "Only 'Paid' and 'Unpaid' is allowed",
             "string.base": "paymentStatus must be a string",
             "string.empty": "paymentStatus cannot be empty",
         }),
@@ -77,7 +74,8 @@ if (validateBodySchema.error) {
 req.validateData = {
     params: value,
     body: validateBodySchema.value,
-    _id
+    _id,
+    phoneNo
 };
 
 next();

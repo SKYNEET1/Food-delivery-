@@ -21,6 +21,10 @@ const restaurantSchema = new mongoose.Schema({
         min: 0,
         max: 5
     }, // will show the average rating in its profile...
+    isDeleted:{
+        type: Boolean,
+        default:false
+    },
     menu: { type: mongoose.Schema.Types.ObjectId, ref: "Menu" }
 }, { timestamps: true });
 
