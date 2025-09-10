@@ -41,6 +41,13 @@ exports.refreshToken = async (req, res) => {
 
         const newAccessToken = generateAccessToken(user.phoneNo, user.category, user._id);
         const newRefreshToken = generateRefreshToken(user.phoneNo, user._id);
+
+        if (!newAccessToken || !newRefreshToken) {
+            return res.status(400).json({
+                message: "Not able to regenerate the newAccessToken or newRefreshToken"
+            });
+        }
+        
         try {
             user.refreshToken = newRefreshToken;
             await user.save();

@@ -14,6 +14,7 @@ const { updateConsumerProfile } = require('../controller/Consumer/updateConsumer
 const { orderFood } = require('../controller/Consumer/orderFood');
 const orderValidation = require('../middleware/ConsumerM/orderValidation');
 const { deleteConsumerProfile } = require('../controller/Consumer/deleteConsumerProfile');
+const { getOrderHistory } = require('../controller/Consumer/getOrderHistory');
 const consumerRouter = express.Router()
 
 consumerRouter.post('/consumer/profile', authenticateUser, consumerTokenValidate, consumerProfileValidator, addConsumerProfile)
@@ -29,6 +30,7 @@ consumerRouter.patch('/consumer/address/:_id/update', authenticateUser, consumer
 consumerRouter.get('/consumer/address/getalladdresses', authenticateUser, consumerTokenValidate, getAllConsumerAddress)
 
 consumerRouter.post('/consumer/order/:restaurant_id/:menu_id/place', authenticateUser, consumerTokenValidate, orderValidation, orderFood)
+consumerRouter.get('/consumer/order/history', authenticateUser, consumerTokenValidate, getOrderHistory)
 
 
 

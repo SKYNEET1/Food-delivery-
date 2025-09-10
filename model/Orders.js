@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-        customer: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
-        restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Resturant" },
-        items: [{
-            foodItem: { type: mongoose.Schema.Types.ObjectId, ref: "Menu" },
-            quantity: { type: Number, default: 1 }
-        }],
+    customer: { type: mongoose.Schema.Types.ObjectId, ref: "Consumer" },
+    restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Resturant" },
+    items: [{
+        foodItem: { type: mongoose.Schema.Types.ObjectId, ref: "Menu" },
+        quantity: { type: Number, default: 1 }
+    }],
     totalCost: Number,
     foodStatus: {
         type: String,
@@ -19,8 +19,8 @@ const orderSchema = new mongoose.Schema({
         default: null
     },
     paymentStatus: { type: String, enum: ["Paid", "Unpaid"], default: "Unpaid" },
-    otp: {type:String}
-},{ timestamps: true });
+    otp: { type: String }
+}, { timestamps: true });
 
 
 module.exports = mongoose.model('Order', orderSchema)
