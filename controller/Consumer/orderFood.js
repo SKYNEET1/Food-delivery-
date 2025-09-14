@@ -5,6 +5,7 @@ const DeliveryProfile = require('../../model/DeliveryProfile');
 const otpCreation = require('../../helper/otpCreation');
 const Orders = require('../../model/Orders');
 // const { getIO } = require('../../utils/socket.io');
+const dispatchWebhook = require('../../utils/webhook')
 
 exports.orderFood = async (req, res) => {
 
@@ -125,7 +126,7 @@ exports.orderFood = async (req, res) => {
             totalCost: total,
             foodStatus: "Placed",
             deliveryAgent: deliveryAgent._id,
-            otp:hashOtp,
+            otp: hashOtp,
             paymentStatus: paymentStatus || "Unpaid"
         })
 
@@ -135,6 +136,20 @@ exports.orderFood = async (req, res) => {
                 message: "Order could not be placed",
             });
 
+        }
+
+        if (order) {
+            dispatchWebhook("foodStatus", {
+                orderId: order._id,
+                status: order.foodStatus,
+                restaurant: isRestaurant.name,
+            });
+
+            dispatchWebhook("paymentStatus", {
+                orderId: order._id,
+                status: order.paymentStatus,
+                amount: order.totalCost,
+            });
         }
 
         // const io = getIO()

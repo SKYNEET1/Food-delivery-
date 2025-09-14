@@ -29,11 +29,6 @@ exports.confirmOtp = async (req, res) => {
             });
         }
 
-        order.foodStatus = "Delivered";
-        if (order.paymentStatus === "Unpaid") {
-            order.paymentStatus = "Paid";
-        }
-
         // Free up delivery agent
         const agent = await DeliveryProfile.findById({ _id })
         if (!agent) {
@@ -46,6 +41,22 @@ exports.confirmOtp = async (req, res) => {
             agent.availability = true;
             await order.save();
         }
+
+        order.foodStatus = "Delivered";
+        if (order.paymentStatus === "Unpaid") {
+            order.paymentStatus = "Paid";
+        }
+
+        dispatchWebhook("foodStatus", {
+            orderId: order._id,
+            status: order.foodStatus,
+        });
+
+        dispatchWebhook("paymentStatus", {
+            orderId: order._id,
+            status: order.paymentStatus,
+            amount: order.totalCost,
+        });
 
         await order.save();
         await agent.save();
