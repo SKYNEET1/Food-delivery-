@@ -10,7 +10,7 @@ const adminTokenValidate = async(req ,res, next) => {
     if (category !== 'admin') {
         return res.status(403).json({
             success: false,
-            message: `This ${phoneNo} is not autherised to create User profile`
+            message: `This ${phoneNo} is not autherised to create Admin profile`
         })
     }
 

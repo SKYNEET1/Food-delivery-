@@ -1,11 +1,26 @@
-const Consumer = require('../../model/Consumer')
+const Consumer = require('../../model/Consumer');
+const client = require('../../utils/redis');
 
 exports.getConsumerProfile = async (req, res) => {
 
     try {
-    const { phoneNo } = req.user;
+        const { phoneNo } = req.user;
 
-        const isProfile = await Consumer.findOne({ phoneNo })
+        const cacheData = await client.hget('consumer', phoneNo)
+        if (cacheData) {
+            const parsed = JSON.parse(cacheData);
+
+            if (!parsed.isDeleted) {
+                console.log("✅ Data returned from Redis Cache");
+                return res.status(200).json({
+                    success: true,
+                    data: parsed,
+                    message: `User ${phoneNo}'s profile fetched from cache`,
+                });
+            }
+        }
+
+        const isProfile = await Consumer.findOne({ phoneNo }).lean();
         if (!isProfile) {
             return res.status(404).json({
                 success: false,
@@ -13,12 +28,17 @@ exports.getConsumerProfile = async (req, res) => {
             })
         }
 
-        if(isProfile.isDeleted === true){
+        if (isProfile.isDeleted === true) {
             return res.status(400).json({
                 success: false,
                 message: 'This User profile has deleted'
             })
         }
+
+        await client.hset('consumer', phoneNo, JSON.stringify(isProfile));
+        console.log('data fetched from mongodb and stored in redis');
+        await client.expire('consumer',120)
+
 
         return res.status(200).json({
             success: true,
